@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# URA (NGO Management Platform)
 
-## Getting Started
+URA is a modern, modular monolith web application designed for NGO operations, including managing organizations, projects, beneficiaries, distributions, and analytics. Built by **Genzura**.
 
-First, run the development server:
+This project focuses on providing a clean, production-ready codebase without bundled infrastructure/DevOps tooling.
+
+## Tech Stack
+
+- **Backend**: NestJS, PostgreSQL (Prisma ORM), Redis, JWT Auth.
+- **Frontend**: Next.js 15 (App Router), React, Tailwind CSS, Lucide Icons.
+
+## Prerequisites
+
+- Node.js (v18+)
+- PostgreSQL Database
+- Redis Server
+
+## Setup Instructions
+
+### 1. Database Setup
+
+Ensure PostgreSQL is running. Create a database for URA.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Set your environment variables in backend/.env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/ura?schema=public"
+JWT_SECRET="your-super-secret-key"
+JWT_REFRESH_SECRET="your-super-secret-refresh-key"
+REDIS_HOST="localhost"
+REDIS_PORT="6379"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Backend Initialization
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Navigate to the backend directory, install dependencies, and run Prisma migrations.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cd backend
+npm install
 
-## Learn More
+# Run database migrations
+npx prisma migrate dev --name init
 
-To learn more about Next.js, take a look at the following resources:
+# Start the development server
+npm run start:dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The API will be available at `http://localhost:3000`.
+Swagger documentation is available at `http://localhost:3000/api/docs`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Frontend Initialization
 
-## Deploy on Vercel
+Navigate to the frontend directory, install dependencies, and start the Next.js server.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd frontend
+npm install
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Create a .env.local file
+echo "NEXT_PUBLIC_API_URL=http://localhost:3000" > .env.local
+
+# Start the development server
+npm run dev
+```
+
+The frontend will be available at `http://localhost:3001` (or 3000 depending on what port Next.js chooses).
+
+## Project Structure
+
+This is a **Modular Monolith** architecture. The backend contains distinct domain modules:
+- `AuthModule`: Authentication (JWT) and Authorization (RBAC).
+- `UsersModule`: Admin, Project Managers, and Field Agents.
+- `OrganizationsModule`: NGO and partner organization management.
+- `ProjectsModule`: Project lifecycle and budget tracking.
+- `BeneficiariesModule`: Registering and categorizing beneficiaries.
+- `DistributionsModule`: Tracking aid distribution.
+- `ReportsModule`: Aggregated metrics and analytics with Redis caching.
+- `DashboardModule`: High-level summary stats.
+- `NotificationsModule`: In-app notifications.
+
+## Features & UI
+
+The frontend uses a modern, responsive design system powered by Tailwind CSS, featuring dark mode support, glassmorphism elements, micro-interactions, and custom color palettes for a premium feel.
